@@ -58,8 +58,9 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'User successfully registered',
-            'user' => $user
-        ], 201);
+            'token' =>Auth::login($user)
+        ]);
+       
 
 }
 
@@ -117,7 +118,10 @@ public function editUserProfile(Request $request) {
     }
     $user->update($request->all());
     
-    return response()->json(['message' => $user]);
+    return response()->json([
+        'message' => 'Profile Updated Successfully',
+        'data' =>$this->userProfile(),
+]);
 }
 
 
