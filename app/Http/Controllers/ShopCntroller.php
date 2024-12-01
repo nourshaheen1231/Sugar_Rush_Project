@@ -34,4 +34,25 @@ class ShopCntroller extends Controller
             ]);
         }
     }
+
+    public function searchShop(Request $request)
+    {
+        if(Auth::user()){
+        $results = Shop::search(($request->name))->get();
+        if($results->isEmpty()) {
+            return response()->json([
+                'message' => 'not found'
+            ]);
+        }
+        return response()->json([
+            'message'=>'shop found successfully',
+            'data'=>$results,
+        ]); 
+    }
+    else{
+        return response()->json([
+            'message'=>'you have to login/signup again'
+        ]);
+    }
+    }
 }

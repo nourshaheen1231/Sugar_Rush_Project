@@ -39,4 +39,25 @@ class ProductController extends Controller
             ]);
         }
     }
+
+    public function searchProduct(Request $request)
+    {
+        if(Auth::user()){
+        $results = Product::search(($request->name))->get();
+        if($results->isEmpty()) {
+            return response()->json([
+                'message' => 'not found'
+            ]);
+        }
+        return response()->json([
+            'message'=>'Product found successfully',
+            'data'=>$results,
+        ]);
+    }
+    else{
+        return response()->json([
+            'message'=>'you have to login/signup again'
+        ]);
+    } 
+    }
 }

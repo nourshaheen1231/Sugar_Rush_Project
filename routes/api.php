@@ -32,6 +32,7 @@ Route::group([
 ], function ($router) {
     Route::get('showShops',[ShopCntroller::class,'showShops']);
     Route::get('showShopDetails',[ShopCntroller::class,'showShopDetails']);
+    Route::get('searchShop',[ShopCntroller::class,'searchShop']);
 });
 
 Route::group([
@@ -41,4 +42,6 @@ Route::group([
 ], function ($router) {
     Route::get('showProducts',[ProductController::class, 'showProducts']);
     Route::get('showProductDetails',[ProductController::class,'showProductDetails']);
+    Route::get('searchProduct',[ProductController::class,'searchProduct']);
 });
+
