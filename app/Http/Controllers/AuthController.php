@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserProfileRequest;
+use App\Models\Shop;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -112,7 +113,6 @@ public function editUserProfile(Request $request) {
             return response()->json(['message'=>'you have to enter old_password to change password']);
         }
         if(! Hash::check($request->old_password,$user->password)){
-            //return $request->old_password;
             return response()->json(['message'=>'old password is wrong']);
         }
     }
