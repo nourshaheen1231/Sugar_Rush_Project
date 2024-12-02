@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopCntroller;
 use Illuminate\Http\Request;
@@ -43,5 +44,15 @@ Route::group([
     Route::get('showProducts',[ProductController::class, 'showProducts']);
     Route::get('showProductDetails',[ProductController::class,'showProductDetails']);
     Route::get('searchProduct',[ProductController::class,'searchProduct']);
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'fav'
+
+], function ($router) {
+    Route::post('addToFvourite',[FavoriteController::class,'addToFvourite']);
+    Route::post('removeFavourite',[FavoriteController::class,'removeFavourite']);
+    Route::get('showFav',[FavoriteController::class,'showFav']);
 });
 

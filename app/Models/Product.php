@@ -19,4 +19,8 @@ class Product extends Model
         'name' => $this->name,
     ];
 }
+
+public function favourites()  {
+    return $this->hasMany(Favorite::class);
+}
 }
