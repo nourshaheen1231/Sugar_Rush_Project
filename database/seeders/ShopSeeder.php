@@ -13,33 +13,33 @@ class ShopSeeder extends Seeder
      */
     public function run(): void
     {
-        Shop::truncate();
+        //Shop::truncate();
         Shop::create([
             'name'=>'lee',
             'description'=>'we have all delicious chocolate you want',
-            'location'=>'Damascus/Mazzah',
-            'image'=>'storage/images/shops/lee.jpg',
+            'location'=>'Mazzah',
+            'image'=>'/storage/images/shops/lee.jpg',
         ]);
 
         Shop::create([
             'name'=>'Dessert House',
             'description'=>'ordering cake from home',
-            'location'=>'Damascus/Dowelaa',
-            'image'=>'storage/images/shops/DessertHouse.jpg',
+            'location'=>'Dowelaa',
+            'image'=>'/storage/images/shops/DessertHouse.jpg',
         ]);
 
         Shop::create([
             'name'=>'Candy Land',
             'description'=>'be happy with our candies',
-            'location'=>'Damascus/Bab Tomah',
-            'image'=>'storage/images/shops/CandyLand.jpg',
+            'location'=>'Bab Tomah',
+            'image'=>'/storage/images/shops/CandyLand.jpg',
         ]);
 
         Shop::create([
             'name'=>'Big Bite',
             'description'=>'take a big bite from our buscuits',
-            'location'=>'Damascus/Baramkah',
-            'image'=>'storage/images/shops/BigBite.jpg',
+            'location'=>'Baramkah',
+            'image'=>'/storage/images/shops/BigBite.jpg',
         ]);
     }
 }

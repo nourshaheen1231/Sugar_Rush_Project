@@ -9,50 +9,61 @@ use Illuminate\Http\Request;
 class ShopCntroller extends Controller
 {
     public function showShops(){
-        if(Auth::user()){
-        $shops = Shop::get()->all();
-        return response()->json([
-            'message' =>'All shops',
-            'data' =>$shops,
-        ]);}
-        else{
-            return response()->json([
-                'message'=>'you have to login/signup again'
-            ]);
+        
+        $user = Auth::user();
+        if(!$user)
+        {
+            return response()->json(['message' => "you have to login/signup again"]);
         }
+        $shops = Shop::query()->get(); 
+        $response = [];
+        foreach($shops as $shop)
+        {
+            $response [] = [
+                'id' => $shop->id ,
+                'name' => $shop->name ,
+                'description' => $shop->description ,
+                'location' => $shop->location ,
+                'image' =>  $shop->image,
+            ];
+        }
+        return response()->json($response , 200);
     }
+
     public function showShopDetails(Request $request){
-        if(Auth::user()){
-            $shop = Shop::find($request->id);
-            return response()->json([
-                'data'=>$shop,
-            ]);
+       $user = Auth::user();
+        if(!$user){
+            return response()->json(['message' => 'you have to login/signup again']);
         }
-        else{
-            return response()->json([
-                'message'=>'you have to login/signup again'
-            ]);
-        }
+        $shop = Shop::find($request->id);
+
+        return response()->json($shop, 200);
     }
 
     public function searchShop(Request $request)
     {
-        if(Auth::user()){
+        $user = Auth::user();
+        if(!$user) {
+            return response()->json(['message' => 'you have to login/signup again']);
+        }
+
         $results = Shop::search(($request->name))->get();
         if($results->isEmpty()) {
-            return response()->json([
-                'message' => 'not found'
-            ]);
+            return response()->json(['message' => 'Not Found']);
         }
-        return response()->json([
-            'message'=>'shop found successfully',
-            'data'=>$results,
-        ]); 
-    }
-    else{
-        return response()->json([
-            'message'=>'you have to login/signup again'
-        ]);
-    }
+
+        $response = [];
+        foreach($results as $result) {
+            $response [] = [
+                'id' => $result->id ,
+                'name' => $result->name ,
+                'description' => $result->description ,
+                'location' => $result->location ,
+                'image' =>  $result->image,
+            ];
+        }
+        
+        return response()->json($response,200);
+            
     }
 }

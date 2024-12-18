@@ -13,52 +13,59 @@ class FavoriteController extends Controller
     public function addToFvourite(Request $request) {
 
         $user = Auth::user();
-        if($user) {
-            $isExsist = Favorite::where('product_id',$request->product_id)->where('user_id',$user->id)->exists();
+
+        if(!$user) {
+            return response()->json(['message' => 'you have to login/signup again']);
+        }
+
+        $isExsist = Favorite::where('product_id',$request->product_id)->where('user_id',$user->id)->exists();
+            
             if($isExsist) {
-                return response()->json(['already exists']);
+                return response()->json('already exists');
             }
+
             $favorite = Favorite::create([
                 'user_id' => $user->id,
                 'product_id' => $request->product_id,
             ]);
 
-            return response()->json([
-                'message' => 'added successfully',
-                'data' => $favorite,
-            ]);
-        }
-        else {
-            return response()->json(['message' => 'you have to login/signup again']);
-        }
+            return response()->json($favorite,200);
     }
 
     public function removeFavourite(Request $request) {
-        $user =Auth::user();
-        if($user) {
-            $fav =Favorite::where('product_id',$request->product_id)->where('user_id',$user->id);
-            $fav->delete();
-            return response()->json([
-                'message' => 'product removed from favourite successfully',
-            ]);
-        }
-        else {
+
+        $user = Auth::user();
+        if(!$user) {
             return response()->json(['message' => 'you have to login/signup again']);
         }
+        $fav = Favorite::where('product_id',$request->product_id)->where('user_id',$user->id);
+        $fav->delete();
+
+         return response()->json('product removed successfully',200);
     }
 
-    public function showFav(){
+    public function showFav() {
+
         $user = Auth::user();
-        if($user){
-            $favs = Favorite::where('user_id', $user->id)->pluck('product_id')->all();
-            $products = Product::whereIn('id',$favs)->get();
-            return response()->json([
-                'data'=>$products
-            ]);
-            
-        }
-        else {
+        if(!$user) {
             return response()->json(['message' => 'you have to login/signup again']);
         }
+        $favs = Favorite::where('user_id', $user->id)->pluck('product_id')->all();
+        $products  = Product::whereIn('id',$favs)->get();
+
+        $response = [];
+        foreach($products as $product) {
+            $response [] = [
+                'id' => $product->id ,
+                'name' => $product->name ,
+                'description' => $product->description ,
+                'image' =>  $product->image,
+                'price' =>  $product->price,
+                'totalQuantity' =>  $product->totalQuantity,
+                'shop_id' =>  $product->shop_id,
+            ];
+        }
+
+        return response()->json($response,200);     
     }
 }

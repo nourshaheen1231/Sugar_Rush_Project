@@ -12,68 +12,84 @@ class ProductController extends Controller
 {
     public function showProducts(Request $request) {
         
-        if(Auth::user()) {
+        $user = Auth::user();
+        if(!$user) {
 
-            //$products = Product::query()->where('shop_id',$request->id)->get();
-            $products = Shop::find($request->id)->product;
-            return response()->json([
-                'message' => 'All Products',
-                'Products' => $products
-            ]);
+            return response()->json(['message' => 'you have to login/signup again']);
         }
-        else{
-            return response()->json([
-                'message'=>'you have to login/signup again'
-            ]);
+
+        $products = Shop::find($request->id)->products;
+
+        $response = [];
+        foreach($products as $product)
+        {
+            $response [] = [
+                'id' => $product->id ,
+                'name' => $product->name ,
+                'description' => $product->description ,
+                'image' =>  $product->image,
+                'price' =>  $product->price,
+                'totalQuantity' =>  $product->totalQuantity,
+                'shop_id' =>  $product->shop_id,
+            ];
         }
+
+        return response()->json($response,200);
     }
 
-    public function isFav($user,$id){
-        $fav =Favorite::where('product_id',$id)->where('user_id',$user->id)->get();
-        if($fav->isEmpty()){
-           return false;
+    public function isFav($user,$id) {
+        $fav = Favorite::where('user_id', $user->id)->where('product_id',$id)->get();
+
+        if($fav->isEmpty()) {
+            return false;
         }
         else {
             return true;
         }
 
     }
+
     public function showProductDetails(Request $request){
         $user = Auth::user();
-        if($user){
+        if(!$user){
+          return response()->json(['message' => 'you have to login/signup again']);
+        }
         $product = Product::find($request->id);
-        $isFav =$this->isFav($user,$request->id);
-        return response()->json([
-            'data'=>$product,
-            'isfavorite'=>$isFav
-        ]);
-        }
-        else{
-            return response()->json([
-                'message'=>'you have to login/signup again'
-            ]);
-        }
+
+        return response()->json([$product,$this->isFav($user,$request->id)],200);
     }
 
     public function searchProduct(Request $request)
     {
-        if(Auth::user()){
+        $user = Auth::user();
+        if(!$user) {
+            return response()->json(['message' => 'you have to login/signup again']);
+        }
         $products = Product::search(($request->name))->get();
+
         $results = $products->where('shop_id',$request->id);
+    
         if($results->isEmpty()) {
+
             return response()->json([
                 'message' => 'not found'
-            ]);
+            ]);                
         }
-        return response()->json([
-            'message'=>'Product found successfully',
-            'data'=>$results,
-        ]);
-    }
-    else{
-        return response()->json([
-            'message'=>'you have to login/signup again'
-        ]);
-    } 
+
+        $response = [];
+        foreach($results as $result) {
+            $response [] = [
+                'id' => $result->id ,
+                'name' => $result->name ,
+                'description' => $result->description ,
+                'image' =>  $result->image,
+                'price' =>  $result->price,
+                'totalQuantity' =>  $result->totalQuantity,
+                'shop_id' =>  $result->shop_id,
+            ];
+        }
+
+        return response()->json($response,200);
+        
     }
 }

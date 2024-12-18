@@ -14,13 +14,18 @@ class Product extends Model
     }
 
     public function toSearchableArray()
-{
-    return [
-        'name' => $this->name,
-    ];
-}
+    {
+        return [
+            'name' => $this->name,
+        ];
+    }
 
-public function favourites()  {
-    return $this->hasMany(Favorite::class);
-}
+    public function favourites()  {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function productDetails(){
+        return $this->hasMany(ProductDetails::class);
+    }
+
 }

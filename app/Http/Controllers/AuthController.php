@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
+use Illuminate\Support\Facades\File;
 use function Laravel\Prompts\password;
 
 class AuthController extends Controller
@@ -96,10 +96,10 @@ public function editUserProfile(Request $request) {
         'firstName' => 'string|between:2,100',
         'lastName' => 'string|between:2,100',
         'phone' => 'string|size:10|unique:users|regex:/^09\d{8}$/',
-        'password' => 'string|confirmed|min:8|regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/',
         'old_password' => 'string|min:8|regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/',
+        'password' => 'string|confirmed|min:8|regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/',
         'location' => 'string',
-        'image' => 'nullable|string'
+        'image' => 'nullable|image|mimes:jpeg,png,jpg'
     ]);
 
     if ($validator->fails()) {
@@ -116,12 +116,21 @@ public function editUserProfile(Request $request) {
             return response()->json(['message'=>'old password is wrong']);
         }
     }
+
+    if ($request->hasFile('image')) { 
+        if($user->image) {
+            $previousImagePath = public_path($user->image);
+            File::delete($previousImagePath);
+        }
+        $originalName = $request->image->getClientOriginalName();
+        $path = $request->image->storeAs('users', $originalName, 'public');
+    }
+
     $user->update($request->all());
+    $user->image = ('/storage/users/'.$originalName);
+    $user->save();
     
-    return response()->json([
-        'message' => 'Profile Updated Successfully',
-        'data' =>$this->userProfile(),
-]);
+    return response()->json(['message' => $this->userProfile()]);
 }
 
 
