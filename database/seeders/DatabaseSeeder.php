@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ShopSeeder::class,
             ProductSeeder::class,
             AddressSeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }

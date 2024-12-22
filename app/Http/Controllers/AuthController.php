@@ -33,6 +33,7 @@ class AuthController extends Controller
         $Token = $this->createNewToken($token);
         return response()->json([
             'message'=>'User successfully loggedin',
+            'role'=>Auth::user()->role,
             'token' =>$Token,
     ]);
     }
